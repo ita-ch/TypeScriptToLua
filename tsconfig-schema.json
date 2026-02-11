@@ -102,6 +102,11 @@
                 "measurePerformance": {
                     "description": "Measure and report performance of the tstl compiler.",
                     "type": "boolean"
+                },
+                "arrayIndexModification": {
+                    "description": "If array indexing operations should be modified (0 based to 1 based).",
+                    "type": "string",
+                    "enum": ["never", "always"]
                 }
             },
             "dependencies": {

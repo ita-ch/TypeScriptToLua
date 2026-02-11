@@ -6,6 +6,7 @@ import { unsupportedProperty } from "../utils/diagnostics";
 import { isArrayType, isNumberType } from "../utils/typescript";
 import { addToNumericExpression } from "../utils/lua-ast";
 import { transformOptionalDeleteExpression } from "./optional-chaining";
+import { arrayIndexModificationEnabled } from "../../CompilerOptions";
 
 export const transformDeleteExpression: FunctionVisitor<ts.DeleteExpression> = (node, context) => {
     if (ts.isOptionalChain(node.expression)) {
@@ -27,7 +28,10 @@ export const transformDeleteExpression: FunctionVisitor<ts.DeleteExpression> = (
         const argumentType = context.checker.getTypeAtLocation(node.expression.argumentExpression);
 
         if (isArrayType(context, type) && isNumberType(context, argumentType)) {
-            propertyExpression = addToNumericExpression(propertyExpression, 1);
+            const options = context.program.getCompilerOptions();
+            if (arrayIndexModificationEnabled(options)) {
+                propertyExpression = addToNumericExpression(propertyExpression, 1);
+            }
         }
     }
 

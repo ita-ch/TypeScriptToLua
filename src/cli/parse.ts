@@ -104,6 +104,11 @@ export const optionDeclarations: CommandLineOption[] = [
         description: "Measure performance of the tstl compiler.",
         type: "boolean",
     },
+    {
+        name: "arrayIndexModification",
+        description: "If array indexing operations should be modified (0 based to 1 based).",
+        type: "string",
+    },
 ];
 
 export function updateParsedConfigFile(parsedConfigFile: ts.ParsedCommandLine): ParsedCommandLine {

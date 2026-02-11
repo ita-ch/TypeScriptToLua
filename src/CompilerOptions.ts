@@ -46,6 +46,7 @@ export interface TypeScriptToLuaOptions {
     tstlVerbose?: boolean;
     lua51AllowTryCatchInAsyncAwait?: boolean;
     measurePerformance?: boolean;
+    arrayIndexModification?: ArrayIndexModification;
 }
 
 export type CompilerOptions = OmitIndexSignature<ts.CompilerOptions> &
@@ -76,8 +77,16 @@ export enum BuildMode {
     Library = "library",
 }
 
+export enum ArrayIndexModification {
+    Never = "never",
+    Always = "always",
+}
+
 export const isBundleEnabled = (options: CompilerOptions) =>
     options.luaBundle !== undefined && options.luaBundleEntry !== undefined;
+
+export const arrayIndexModificationEnabled = (options: CompilerOptions) =>
+    options.arrayIndexModification !== ArrayIndexModification.Never;
 
 export function validateOptions(options: CompilerOptions): ts.Diagnostic[] {
     const diagnostics: ts.Diagnostic[] = [];

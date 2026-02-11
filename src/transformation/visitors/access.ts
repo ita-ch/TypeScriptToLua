@@ -25,6 +25,7 @@ import {
 import { SyntaxKind } from "typescript";
 import { getCustomNameFromSymbol } from "./identifier";
 import { getSymbolExportScope, isSymbolExported } from "../utils/export";
+import { arrayIndexModificationEnabled } from "../../CompilerOptions";
 
 function addOneToArrayAccessArgument(
     context: TransformationContext,
@@ -34,7 +35,10 @@ function addOneToArrayAccessArgument(
     const type = context.checker.getTypeAtLocation(node.expression);
     const argumentType = context.checker.getTypeAtLocation(node.argumentExpression);
     if (isArrayType(context, type) && isNumberType(context, argumentType)) {
-        return addToNumericExpression(index, 1);
+        const options = context.program.getCompilerOptions();
+        if (arrayIndexModificationEnabled(options)) {
+            return addToNumericExpression(index, 1);
+        }
     }
     return index;
 }

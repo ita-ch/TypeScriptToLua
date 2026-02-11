@@ -165,6 +165,7 @@ export abstract class TestBuilder {
         moduleResolution: ts.ModuleResolutionKind.Node10,
         resolveJsonModule: true,
         sourceMap: true,
+        arrayIndexModification: tstl.ArrayIndexModification.Never,
     };
     public setOptions(options: tstl.CompilerOptions = {}): this {
         this.throwIfProgramExists("setOptions");
