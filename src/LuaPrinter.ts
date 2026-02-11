@@ -867,17 +867,23 @@ export class LuaPrinter {
     protected printExpressionList(expressions: lua.Expression[]): SourceChunk[] {
         const chunks: SourceChunk[] = [];
 
-        if (this.isSimpleExpressionList(expressions)) {
-            chunks.push(...this.joinChunksWithComma(expressions.map(e => this.printExpression(e))));
-        } else {
-            chunks.push("\n");
-            this.pushIndent();
-            for (const [index, expression] of expressions.entries()) {
+        for (const [index, expression] of expressions.entries()) {
+            if (lua.isCallExpression(expression)) {
+                if (index === 0) {
+                    chunks.push("\n");
+                } else {
+                    chunks.pop();
+                    chunks.push(",\n");
+                }
+                this.pushIndent();
                 const tail = index < expressions.length - 1 ? ",\n" : "\n";
                 chunks.push(this.indent(), this.printExpression(expression), tail);
+                this.popIndent();
+                chunks.push(this.indent());
+            } else {
+                const tail = index < expressions.length - 1 ? ", " : "";
+                chunks.push(this.printExpression(expression), tail);
             }
-            this.popIndent();
-            chunks.push(this.indent());
         }
 
         return chunks;
