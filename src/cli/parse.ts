@@ -1,6 +1,8 @@
 import * as ts from "typescript";
 import { BuildMode, CompilerOptions, LuaLibImportKind, LuaTarget } from "../CompilerOptions";
 import * as cliDiagnostics from "./diagnostics";
+import * as fs from "fs";
+import * as path from "path";
 
 export interface ParsedCommandLine extends ts.ParsedCommandLine {
     options: CompilerOptions;
@@ -111,6 +113,31 @@ export const optionDeclarations: CommandLineOption[] = [
     },
 ];
 
+function substituteFirmwareLocation(config: ts.ParsedCommandLine) {
+    if (config.options.outDir?.includes("${firmwareLocation}")) {
+        let substitution = "";
+        const baseDir = process.cwd();
+        const paths = fs.readdirSync(baseDir, { recursive: true });
+        const filtered = paths.filter(dir => dir.toString().endsWith("sharedscripts_default"));
+        if (filtered.length === 1) {
+            substitution = path.dirname(filtered[0].toString());
+        }
+        if (substitution && substitution !== "") {
+            config.options.outDir = path.normalize(config.options.outDir?.replace("${firmwareLocation}", substitution));
+        } else {
+            config.errors.push({
+                file: undefined,
+                start: undefined,
+                length: undefined,
+                category: ts.DiagnosticCategory.Error,
+                code: 42,
+                source: "typescript-to-lua",
+                messageText: "Cannot find firmware location (sharedscripts_default)"
+            });
+        }
+    }
+}
+
 export function updateParsedConfigFile(parsedConfigFile: ts.ParsedCommandLine): ParsedCommandLine {
     let hasRootLevelOptions = false;
     for (const [name, rawValue] of Object.entries(parsedConfigFile.raw)) {
@@ -139,6 +166,8 @@ export function updateParsedConfigFile(parsedConfigFile: ts.ParsedCommandLine): 
             if (parsedConfigFile.options[name] === undefined) parsedConfigFile.options[name] = value;
         }
     }
+
+    substituteFirmwareLocation(parsedConfigFile);
 
     return parsedConfigFile;
 }
@@ -180,6 +209,8 @@ function updateParsedCommandLine(parsedCommandLine: ts.ParsedCommandLine, args: 
             }
         }
     }
+
+    substituteFirmwareLocation(parsedCommandLine);
 
     return parsedCommandLine;
 }
