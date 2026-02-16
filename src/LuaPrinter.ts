@@ -664,26 +664,27 @@ export class LuaPrinter {
     public printFunctionExpression(expression: lua.FunctionExpression): SourceNode {
         const chunks: SourceChunk[] = [];
 
+        chunks.push("\n");
         chunks.push("function(");
         chunks.push(...this.printFunctionParameters(expression));
         chunks.push(")");
 
-        if (lua.isInlineFunctionExpression(expression)) {
-            const returnStatement = expression.body.statements[0];
-            chunks.push(" ");
-            const returnNode: SourceChunk[] = [
-                "return ",
-                ...this.joinChunksWithComma(returnStatement.expressions.map(e => this.printExpression(e))),
-            ];
-            chunks.push(this.createSourceNode(returnStatement, returnNode));
-            chunks.push(this.createSourceNode(expression, " end"));
-        } else {
-            chunks.push("\n");
-            this.pushIndent();
-            chunks.push(this.printBlock(expression.body));
-            this.popIndent();
-            chunks.push(this.indent(this.createSourceNode(expression, "end")));
-        }
+        // if (lua.isInlineFunctionExpression(expression)) {
+        //     const returnStatement = expression.body.statements[0];
+        //     chunks.push(" ");
+        //     const returnNode: SourceChunk[] = [
+        //         "return ",
+        //         ...this.joinChunksWithComma(returnStatement.expressions.map(e => this.printExpression(e))),
+        //     ];
+        //     chunks.push(this.createSourceNode(returnStatement, returnNode));
+        //     chunks.push(this.createSourceNode(expression, " end"));
+        // } else {
+        chunks.push("\n");
+        this.pushIndent();
+        chunks.push(this.printBlock(expression.body));
+        this.popIndent();
+        chunks.push(this.indent(this.createSourceNode(expression, "end")));
+        // }
 
         return this.createSourceNode(expression, chunks);
     }
