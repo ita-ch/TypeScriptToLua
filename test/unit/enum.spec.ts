@@ -208,14 +208,9 @@ test("enum nested in namespace", () => {
     util.testModule`
         namespace A {
             export enum TestEnum {
-                C,
-                D
+                B,
+                C
             }
         }
-    `.tap(builder => {
-        const lua = builder.getMainLuaCodeChunk();
-        expect(lua).toMatch(
-            'A = A or ({})\ndo\n    A.TestEnum = A.TestEnum or ({})\n    A.TestEnum.C = 0\n    A.TestEnum[A.TestEnum.C] = "C"\n    A.TestEnum.D = 1\n    A.TestEnum[A.TestEnum.D] = "D"\nend'
-        );
-    });
+    `.expectLuaToMatchSnapshot();
 });
