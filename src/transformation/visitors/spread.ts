@@ -76,7 +76,7 @@ export const transformSpreadElement: FunctionVisitor<ts.SpreadElement> = (node, 
 
     const iterableExtensionType = getIterableExtensionKindForNode(context, node.expression);
     if (iterableExtensionType) {
-        if (iterableExtensionType === IterableExtensionKind.Iterable) {
+        if (iterableExtensionType === IterableExtensionKind.Iterable || iterableExtensionType === IterableExtensionKind.IPairs) {
             return transformLuaLibFunction(context, LuaLibFeature.LuaIteratorSpread, node, innerExpression);
         } else if (iterableExtensionType === IterableExtensionKind.Pairs) {
             const objectEntries = transformLuaLibFunction(context, LuaLibFeature.ObjectEntries, node, innerExpression);
