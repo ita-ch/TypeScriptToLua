@@ -99,6 +99,7 @@ export function getExtensionKindForSymbol(
 export enum IterableExtensionKind {
     Iterable = "Iterable",
     Pairs = "Pairs",
+    IPairs = "IPairs",
     PairsKey = "PairsKey",
 }
 

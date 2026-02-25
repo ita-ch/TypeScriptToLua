@@ -6,6 +6,7 @@ import { isArrayType } from "../../utils/typescript";
 import {
     transformForOfIterableStatement,
     transformForOfPairsIterableStatement,
+    transformForOfIPairsIterableStatement,
     transformForOfPairsKeyIterableStatement,
 } from "../language-extensions/iterable";
 import { isRangeFunction, transformRangeStatement } from "../language-extensions/range";
@@ -54,6 +55,8 @@ export const transformForOfStatement: FunctionVisitor<ts.ForOfStatement> = (node
             return transformForOfIterableStatement(context, node, body);
         } else if (iterableExtensionType === IterableExtensionKind.Pairs) {
             return transformForOfPairsIterableStatement(context, node, body);
+        } else if (iterableExtensionType === IterableExtensionKind.IPairs) {
+            return transformForOfIPairsIterableStatement(context, node, body);
         } else if (iterableExtensionType === IterableExtensionKind.PairsKey) {
             return transformForOfPairsKeyIterableStatement(context, node, body);
         } else {

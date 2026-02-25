@@ -101,6 +101,23 @@ export function transformForOfPairsIterableStatement(
     );
 }
 
+export function transformForOfIPairsIterableStatement(
+    context: TransformationContext,
+    statement: ts.ForOfStatement,
+    block: lua.Block
+): lua.Statement {
+    const pairsCall = lua.createCallExpression(lua.createIdentifier("ipairs"), [
+        context.transformExpression(statement.expression),
+    ]);
+    return transformForOfMultiIterableStatement(
+        context,
+        statement,
+        block,
+        pairsCall,
+        invalidPairsIterableWithoutDestructuring
+    );
+}
+
 export function transformForOfPairsKeyIterableStatement(
     context: TransformationContext,
     statement: ts.ForOfStatement,
