@@ -154,9 +154,9 @@ export function transformStringPrototypeCall(
         case "padEnd":
             return transformLuaLibFunction(context, LuaLibFeature.StringPadEnd, node, caller, ...params);
         case "toString":
-            return; // will be handled by transformObjectPrototypeCall
+        // return; // will be handled by transformObjectPrototypeCall
         default:
-            context.diagnostics.push(unsupportedProperty(calledMethod.name, "string", expressionName));
+        // context.diagnostics.push(unsupportedProperty(calledMethod.name, "string", expressionName));
     }
 }
 
