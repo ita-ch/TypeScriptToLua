@@ -665,7 +665,7 @@ export class LuaPrinter {
         const chunks: SourceChunk[] = [];
 
         chunks.push("\n");
-        chunks.push("function(");
+        chunks.push(this.indent("function("));
         chunks.push(...this.printFunctionParameters(expression));
         chunks.push(")");
 
